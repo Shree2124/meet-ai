@@ -1,0 +1,77 @@
+import { query, Router } from "express";
+import {
+  getLast7DaysMeetingDetails,
+  getMeetingHistory,
+  getNext7DaysMeetingDetails,
+  getScheduleMeetings,
+  getSystemUsers,
+  getTodaysSchedule,
+  getUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  registerUser,
+  resetPassword,
+  sendEmail,
+  setAccessToken,
+  setOauthCookies,
+  updateAccountDetails,
+  updatePassword,
+  uploadAvatar,
+  verifyUser,
+} from "../controllers/user.controller";
+import { verifyJWT } from "../middlewares/auth.middleware";
+import passport from "passport";
+import { upload } from "../middlewares/multer.middleware";
+import { getSystemErrorMap } from "util";
+
+const userRouter = Router();
+
+/* Register route */
+userRouter.route("/register").post(registerUser);
+userRouter.post("/verify", verifyUser);
+
+/* Login route */
+userRouter.route("/login").post(loginUser);
+userRouter.route("/forgot-password").post(sendEmail);
+userRouter.route("/reset-password").put(resetPassword);
+userRouter.route("/refresh-token").post(refreshAccessToken)
+
+/* Oauth routes */
+userRouter.route("/oauth/google").get(
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  }),
+  setOauthCookies
+);
+userRouter.route("/oauth/github").get(
+  passport.authenticate("github", {
+    scope: ["profile", "email"],
+    session: false,
+  }),
+  setOauthCookies
+);
+
+
+userRouter.route("/set-access-token").get(setAccessToken);
+
+/* Auth Middleware to check if person is authenticated or not */
+userRouter.use(verifyJWT);  
+
+/* Protected routes */
+userRouter.route("/get-user").get(getUser);
+userRouter.route("/logout").get(logoutUser);
+userRouter.route("/get-all-users").get(getSystemUsers)
+userRouter.route("/update-password").put(updatePassword);
+userRouter
+  .route("/upload-avatar")
+  .put(upload.single("avatar"), uploadAvatar);
+userRouter.route("/update-profile").put(upload.single("avatar"),updateAccountDetails);
+userRouter.route("/get-meeting-history").get(getMeetingHistory)
+userRouter.route("/get-scheduled-meetings").get(getScheduleMeetings)
+userRouter.route("/get-last-7-days-meetings-details").get(getLast7DaysMeetingDetails)
+userRouter.route("/get-next-7-days-meetings-details").get(getNext7DaysMeetingDetails)
+userRouter.route("/get-todays-schedule").get(getTodaysSchedule)
+
+export default userRouter;

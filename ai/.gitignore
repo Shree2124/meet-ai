@@ -1,0 +1,37 @@
+# Ignore virtual environment
+.venv/
+venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore local environment and configuration files
+.env
+*.env
+
+# Ignore VSCode settings
+.vscode/
+*.code-workspace
+
+summaryModel
+
+
+# Ignore log files
+*.log
+
+# Ignore any temp files
+*.temp
+*.tmp
+
+# Ignore Python egg files
+*.egg-info/
+*.egg
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db

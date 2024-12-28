@@ -1,0 +1,17 @@
+.str-chat__channel{
+    width: 100%;
+}
+
+.str-chat__message-input{
+    padding-bottom: 3rem;
+}
+
+.card{
+    background-color: black !important;
+}
+
+@media (min-width: 768px){
+    .str-chat__message-input {
+        padding-bottom: 1rem;
+    }
+}
