@@ -1,0 +1,9 @@
+{
+	"extends": "./tsconfig.json",
+	"exclude": [
+		"src/components/User/Login/Login.tsx",
+		"src/components/User/Register/Register.tsx",
+		"tests/**",
+		"scripts/**"
+	]
+}
