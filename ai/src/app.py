@@ -3,8 +3,6 @@ import os
 
 load_dotenv()
 
-print(os.getenv("TF_ENABLE_ONEDNN_OPTS"))
-
 from flask import Flask, request, jsonify
 from pathlib import Path
 from transformers import pipeline
@@ -60,7 +58,7 @@ app.register_blueprint(api, url_prefix="/api")
 
 
 @app.route("/")
-def hello():
+def hello():    
     return "<h1>Hello From the Flask App</h1>"
 
 
