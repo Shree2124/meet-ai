@@ -2,13 +2,13 @@ import base64
 import io
 import os
 from flask import Blueprint, Response, request, jsonify, send_file
-from utils.ask_utils import generate_answer
-from utils.analysis_utils import (
+from src.utils.ask_utils import generate_answer
+from src.utils.analysis_utils import (
     extract_speaker_turns_and_word_count,
     analyze_transcript,
 )
-from utils.pdf_generation_utils import parse_input_to_dict
-from utils.visual_utils import create_visualization_plots
+from src.utils.pdf_generation_utils import parse_input_to_dict
+from src.utils.visual_utils import create_visualization_plots
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Image, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle

@@ -1,4 +1,4 @@
-from config.open_router_client import client
+from src.config.open_router_client import client
 import logging
 from collections import Counter
 import re

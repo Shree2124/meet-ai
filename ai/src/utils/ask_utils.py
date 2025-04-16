@@ -1,4 +1,4 @@
-from config.open_router_client import client 
+from src.config.open_router_client import client 
 
 def generate_answer(question, transcription_text):
     """Generates an AI response using prompt engineering with transcription context.

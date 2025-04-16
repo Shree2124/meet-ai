@@ -4,7 +4,7 @@ import os
 load_dotenv()
 
 from flask import Flask
-from api.analysis import app as api
+from src.api.analysis import app as api
 
 
 
