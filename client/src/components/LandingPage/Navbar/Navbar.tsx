@@ -1,3 +1,5 @@
+// @ts-ignore
+
 import React, { useEffect, useState } from "react";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
 import Image from "next/image";
