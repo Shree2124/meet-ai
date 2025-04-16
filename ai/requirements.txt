@@ -23,6 +23,8 @@ requests==2.32.3
 safetensors==0.4.5
 sympy==1.13.1
 tokenizers==0.20.1
+seborn
+matplotlib
 tqdm==4.66.6
 typing_extensions==4.12.2
 urllib3==2.2.3
