@@ -8,7 +8,7 @@ Flask==3.0.3
 fsspec==2024.10.0
 PyPDF2
 reportlab
-dotenv
+python-dotenv
 idna==3.10
 itsdangerous==2.2.0
 Jinja2==3.1.4
