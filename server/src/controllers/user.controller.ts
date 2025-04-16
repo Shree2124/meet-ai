@@ -14,10 +14,9 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import uploadOnCloudinary from "../utils/cloudinary";
 import Meeting from "../models/meeting.model";
-import mongoose, { AnyBulkWriteOperation } from "mongoose";
+import mongoose from "mongoose";
 import sendMail from "../utils/sendMail";
-import moment from "moment";
-import { countReset } from "console";
+
 
 const options: any = {
   httpOnly: false,

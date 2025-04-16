@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+  baseURL: `http://localhost:5000/api/v1`,
   withCredentials: true,
 });
 

@@ -70,10 +70,10 @@ export default function LandingPage() {
             <Review />
             <HoverEffect items={hoverItems} />
           </section>
-          <section id="contact">
+          {/* <section id="contact">
             <Contact />
-          </section>
-          <Footer />
+          </section> */}
+          {/* <Footer /> */}
           <Copyright />
         </div>
       )}

@@ -42,11 +42,11 @@
       title: "Home",
       url: "#home",
     },
-    {
-      id: "0202",
-      title: "About",
-      url: "#about",
-    },
+    // {
+    //   id: "0202",
+    //   title: "About",
+    //   url: "#about",
+    // },
     {
       id: "0303",
       title: "Contact",

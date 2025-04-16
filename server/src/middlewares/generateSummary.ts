@@ -37,6 +37,7 @@ export const generateSummary = asyncHandler(async(req:any, res:Response, next:Ne
         if(!meeting){
            throw new ApiError(402,"Meeting not found!")
         }
+        console.log(meeting?.dialogues)
 
         if(!meeting?.dialogues?.trim()){
             throw new ApiError(402,"Conversation is empty!")
