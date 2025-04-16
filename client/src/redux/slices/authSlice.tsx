@@ -57,7 +57,7 @@ export const loginUser = (credentials: {
 }): AppThunk => async (dispatch) => {
   dispatch(setLoading());
   try {
-    console.log(process.env.BACKEND_URL)
+    console.log(process.env.NEXT_PUBLIC_BACKEND_URL)
     const response = await axiosInstance.post("/user/login", credentials);
     return response;
   } catch (error:any) {

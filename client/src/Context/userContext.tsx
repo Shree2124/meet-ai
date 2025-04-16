@@ -30,7 +30,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/user/set-access-token', {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/set-access-token`, {
           withCredentials: true
         });
         setToken(response.data.data.accessToken);
