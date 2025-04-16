@@ -13,6 +13,10 @@ export const verifyJWT = asyncHandler(
     const token =
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
+
+      console.log("token", token);
+      console.log("env ", process.env.NODE_ENV);      
+
     if (!token) {
       throw new ApiError(401, "user should be logged in first!");
     }

@@ -60,7 +60,7 @@ userRouter.route("/set-access-token").get(setAccessToken);
 userRouter.use(verifyJWT);  
 
 /* Protected routes */
-userRouter.route("/get-user").get(getUser);
+userRouter.route("/get-user").post(getUser);
 userRouter.route("/logout").get(logoutUser);
 userRouter.route("/get-all-users").get(getSystemUsers)
 userRouter.route("/update-password").put(updatePassword);
