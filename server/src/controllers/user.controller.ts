@@ -16,13 +16,15 @@ import uploadOnCloudinary from "../utils/cloudinary";
 import Meeting from "../models/meeting.model";
 import mongoose from "mongoose";
 import sendMail from "../utils/sendMail";
+import { CookieOptions } from 'express';
 
 
-const options: any = {
-  httpOnly: false,
-  secure: true,
-  sameSite: "Strict",
-  path: "/",
+const options: CookieOptions = {
+	httpOnly: true,
+	secure: process.env.NODE_ENV === 'development',
+	sameSite: process.env.NODE_ENV === 'development' ? 'none' : 'lax',
+	path: '/',
+	maxAge: 15 * 60 * 1000,
 };
 
 const { ObjectId } = mongoose.Types;
