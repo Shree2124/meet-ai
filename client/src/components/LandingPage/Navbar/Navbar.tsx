@@ -73,8 +73,8 @@ const handleLogout = async() => {
           openNavigation ? "bg-black/50" : "bg-black/90 backdrop-blur-sm"
         }`}
       >
-        <div className="flex items-center px-4 lg:px-3 xl:px-6 ">
-          <Link href="#hero" className="block w-[12rem] xl:mr-8">
+        <div className="flex items-center px-4 lg:px-3 xl:px-6">
+          <Link href="#hero" className="block xl:mr-8 w-[12rem]">
             <Logo width={"4rem"}/>
           </Link>
 
@@ -86,7 +86,7 @@ const handleLogout = async() => {
                   <button
                    key={item.id}
                    onClick={()=>handleOptionClick(item.url)}
-                   className="block text-[16px] uppercase text-n-1 transition-colors hover:text-color-1 px-6 py-6 md:py-8 font-roboto font-normal"
+                   className="block px-6 py-6 md:py-8 font-roboto font-normal text-[16px] text-n-1 hover:text-color-1 uppercase transition-colors"
                   >
                         {item.title}
                   </button>
@@ -95,7 +95,7 @@ const handleLogout = async() => {
           </div>
 
           {/* Buttons for Larger Devices */}
-          <div className="lg:flex items-center space-x-4 ml-auto hidden relative">
+          <div className="hidden relative lg:flex items-center space-x-4 ml-auto">
             {user ? (
               <Box position="relative">
                 <Box display="flex" alignItems="center">
@@ -109,10 +109,10 @@ const handleLogout = async() => {
                     {user?.userName || "User"}
                   </Typography>
                   <IconButton onClick={handleDropdownToggle}>
-                    <FontAwesomeIcon
-                      color="white"
-                      icon={isDropdownOpen ? faCaretUp : faCaretDown}
-                    />
+                  <FontAwesomeIcon
+                    color="white"
+                    icon={isDropdownOpen ? { prefix: 'fas', iconName: 'caret-up' } : { prefix: 'fas', iconName: 'caret-down' }}
+                  />
                   </IconButton>
                 </Box>
 
@@ -132,7 +132,7 @@ const handleLogout = async() => {
                   >
                     <Link
                       href="profile"
-                      className="block px-4 py-2 rounded-md hover:bg-[#434244]"
+                      className="block hover:bg-[#434244] px-4 py-2 rounded-md"
                       onClick={() => {
                         setDropdownOpen(false);
                         toggleNavigation();
@@ -141,7 +141,7 @@ const handleLogout = async() => {
                       Profile
                     </Link>
                     <button
-                      className="block px-4 py-2 rounded-md hover:bg-[#434244]"
+                      className="block hover:bg-[#434244] px-4 py-2 rounded-md"
                       onClick={() => {
                         handleLogout()
                         setDropdownOpen(false);
@@ -152,7 +152,7 @@ const handleLogout = async() => {
                     </button>
                     <Link
                       href="/user/dashboard"
-                      className="block px-4 py-2 rounded-md hover:bg-[#434244]"
+                      className="block hover:bg-[#434244] px-4 py-2 rounded-md"
                       onClick={() => {
                         setDropdownOpen(false);
                       }}
@@ -166,20 +166,20 @@ const handleLogout = async() => {
               <>
                 <Link
                   href="auth/register"
-                  className="button text-n-1/50 transition-colors hover:text-n-1"
+                  className="text-n-1/50 hover:text-n-1 transition-colors button"
                 >
                   Sign up
                 </Link>
                 <Link
                   href="auth/login"
-                  className="font-semibold whitespace-nowrap leading-none transition duration-300 ease-in-out text-sm px-6 py-3 rounded-lg bg-primary-gradient text-white hover:text-white/80 hover:shadow-md hover:shadow-brand-purple-500/80 flex items-center space-x-2"
+                  className="flex items-center space-x-2 bg-primary-gradient hover:shadow-brand-purple-500/80 hover:shadow-md px-6 py-3 rounded-lg font-semibold text-white hover:text-white/80 text-sm leading-none whitespace-nowrap transition duration-300 ease-in-out"
                 >
                   <span>Sign in</span>
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
+                    className="w-5 h-5"
                   >
                     <path
                       fillRule="evenodd"
@@ -195,11 +195,11 @@ const handleLogout = async() => {
 
           <button
             aria-label="Toggle Navigation"
-            className="ml-auto lg:hidden px-3 relative z-10"
+            className="lg:hidden z-10 relative ml-auto px-3"
             onClick={toggleNavigation}
           >
             <FontAwesomeIcon
-              icon={openNavigation ? faTimes : faBars}
+              icon={{ iconName: openNavigation ? 'times' : 'bars', prefix: 'fas' }}
               className="text-gray-600 transition-transform duration-300"
             />
           </button>
@@ -247,7 +247,7 @@ const handleLogout = async() => {
                 <Link
                   href="user/dashboard"
                   onClick={toggleNavigation}
-                  className="text-[16px] uppercase text-n-1 transition-colors hover:text-color-1 px-6 py-6 md:py-8 font-roboto font-normal flex items-center justify-between"
+                  className="flex justify-between items-center px-6 py-6 md:py-8 font-roboto font-normal text-[16px] text-n-1 hover:text-color-1 uppercase transition-colors"
                 >
                   Dashboard
                 </Link>
@@ -256,7 +256,7 @@ const handleLogout = async() => {
                     // Add your logout functionality here
                     handleLogout()
                   }}
-                  className="text-[16px] uppercase text-n-1 transition-colors hover:text-color-1 px-6 py-6 md:py-8 font-roboto font-normal flex items-center justify-between"
+                  className="flex justify-between items-center px-6 py-6 md:py-8 font-roboto font-normal text-[16px] text-n-1 hover:text-color-1 uppercase transition-colors"
                 >
                   Logout
                 </button>
@@ -265,13 +265,13 @@ const handleLogout = async() => {
               <>
                 <Link
                   href="auth/register"
-                  className="text-xl uppercase text-n-1 transition-colors hover:text-color-1 py-6"
+                  className="py-6 text-n-1 hover:text-color-1 text-xl uppercase transition-colors"
                 >
                   Sign up
                 </Link>
                 <Link
                   href="auth/login"
-                  className="text-xl uppercase bg-primary-gradient text-white px-6 py-3 rounded-lg hover:text-white/80"
+                  className="bg-primary-gradient px-6 py-3 rounded-lg text-white hover:text-white/80 text-xl uppercase"
                 >
                   Sign in
                 </Link>
