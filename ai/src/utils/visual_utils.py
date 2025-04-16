@@ -1,9 +1,5 @@
 import base64
-from collections import Counter
 import io
-import re
-import PyPDF2
-import seaborn as sns
 from matplotlib import pyplot as plt
 
 def create_visualization_plots(speaker_turns, word_count):
