@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+  baseURL: 'https://meet-ai-ekne.onrender.com/api/v1',
   withCredentials: true,
 });
 
@@ -40,8 +40,7 @@ axiosInstance.interceptors.response.use(
       }
 
       try {
-        const refreshResponse = await axiosInstance.post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/user/refresh-token`,
+        const refreshResponse = await axiosInstance.post(`/user/refresh-token`,
           { refreshToken }
         );
         console.log(refreshResponse.data.data);
