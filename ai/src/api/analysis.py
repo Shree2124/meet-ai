@@ -357,14 +357,6 @@ def generate_pdf():
     except Exception as e:
         return jsonify({"error": f"Failed to build PDF: {str(e)}"}), 500
     
-    # Ensure the output directory exists
-    output_dir = os.path.join("data", "output")
-    os.makedirs(output_dir, exist_ok=True)
-    
-    # Write the buffer content to a file
-    output_path = os.path.join(output_dir, "meeting_summary.pdf")
-    with open(output_path, "wb") as f:
-        f.write(buffer.getvalue())
     
     # Move buffer pointer to beginning
     buffer.seek(0)

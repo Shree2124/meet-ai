@@ -30,14 +30,17 @@ const uploadOnCloudinary = async (
     }
     const uploadOptions: UploadApiOptions = {
       public_id: localFilePath.split("\\").pop()?.split(".")[0],
-      resource_type: resourceType || "auto",
+      resource_type: "auto",
     };
     const response = await cloudinary.uploader.upload(
       localFilePath,
       uploadOptions
     );
-    fs.unlinkSync(localFilePath);
-    return response;
+    if (response) {
+      fs.unlinkSync(localFilePath);
+      return response;
+    }
+    return null
   } catch (error) {
     fs.unlinkSync(localFilePath);
     console.error("Cloudinary Error:", error);

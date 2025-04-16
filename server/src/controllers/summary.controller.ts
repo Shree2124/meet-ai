@@ -250,7 +250,7 @@ const generateSummaryFile2 = asyncHandler(async (req: any, res: Response) => {
 
   // First, make a request to analyze the transcript
   try {
-    const analyzeResponse = await axios.post("http://127.0.0.1:5001/api/analyze", {
+    const analyzeResponse = await axios.post(`${process.env.FLASK_API_URL}/analyze`, {
       transcription: meeting?.dialogues
     });
 
@@ -270,7 +270,7 @@ const generateSummaryFile2 = asyncHandler(async (req: any, res: Response) => {
       );
 
       // Now generate the PDF by calling the generate-pdf endpoint
-      const pdfResponse = await axios.post("http://127.0.0.1:5001/api/generate-pdf", {
+      const pdfResponse = await axios.post(`${process.env.FLASK_API_URL}/generate-pdf`, {
         sections: meeting.summary,
         transcription: meeting?.dialogues
       }, {

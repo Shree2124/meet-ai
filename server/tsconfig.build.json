@@ -1,0 +1,11 @@
+{
+	"extends": "./tsconfig.json",
+	"exclude": [
+		"src/models/user.model.ts",
+		"src/config/envConfig.ts",
+		"src/controllers/user.controller.ts",
+		"src/middlewares/auth.middleware.ts",
+		"tests/**",
+		"scripts/**"
+	]
+}
