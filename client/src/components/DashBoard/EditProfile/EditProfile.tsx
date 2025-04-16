@@ -16,7 +16,7 @@ const ProfileEdit = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch: AppDispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user }: any = useSelector((state: RootState) => state.auth);
   
 
 
@@ -84,20 +84,20 @@ const ProfileEdit = () => {
   return (
     <main className="flex flex-1 h-screen overflow-hidden">
       <div className="sm:w-[130px] md:w-[130px] lg:w-[264px]"></div>
-      <div className="flex-1 flex justify-center items-center p-6">
-        <div className="bg-blueAccent-1001 p-10 rounded-xl shadow-lg max-w-lg w-full relative text-center">
+      <div className="flex flex-1 justify-center items-center p-6">
+        <div className="relative bg-blueAccent-1001 shadow-lg p-10 rounded-xl w-full max-w-lg text-center">
           {/* Profile Image */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 -top-20">
+          <div className="-top-20 left-1/2 absolute -translate-x-1/2 transform">
             <label htmlFor="avatar-upload" className={`relative ${isEditing ? 'cursor-pointer' : ''}`}>
               <div
-                className="w-40 h-40 rounded-full bg-cover bg-center border-4 border-white shadow-lg"
+                className="bg-cover bg-center shadow-lg border-4 border-white rounded-full w-40 h-40"
                 style={{
                   backgroundImage: localUser?.avatar ? `url(${localUser?.avatar})` : 'https://www.w3schools.com/howto/img_avatar.png',
                   backgroundColor: localUser?.avatar ? 'transparent' : 'gray', // For debugging
                 }}
               >
                 {isEditing && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full">
+                  <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 rounded-full">
                     <span className="text-white text-sm">Click to change avatar</span>
                   </div>
                 )}
@@ -126,41 +126,41 @@ const ProfileEdit = () => {
             </label>
           </div>
 
-          <div className="mt-24 space-y-4">
+          <div className="space-y-4 mt-24">
             {isEditing ? (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-white">Username</label>
+                  <label className="block font-medium text-white text-sm">Username</label>
                   <input
                     type="text"
                     name="userName"
                     value={localUser.userName}
                     onChange={handleChange}
-                    className="mt-1 w-full p-3 bg-gray-700 text-white rounded-md"
+                    className="bg-gray-700 mt-1 p-3 rounded-md w-full text-white"
                     placeholder="Enter Username"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white">Full Name</label>
+                  <label className="block font-medium text-white text-sm">Full Name</label>
                   <input
                     type="text"
                     name="fullName"
                     value={localUser.fullName}
                     onChange={handleChange}
-                    className="mt-1 w-full p-3 bg-gray-700 text-white rounded-md"
+                    className="bg-gray-700 mt-1 p-3 rounded-md w-full text-white"
                     placeholder="Enter Full Name"
                   />
                 </div>
               </>
             ) : (
               <>
-                <h2 className="text-3xl font-bold text-white mb-1">
+                <h2 className="mb-1 font-bold text-white text-3xl">
                   {localUser.fullName}
                 </h2>
-                <p className="text-gray-400 mb-4">{localUser.userName}</p>
+                <p className="mb-4 text-gray-400">{localUser.userName}</p>
                 <button
                   onClick={handleEditToggle}
-                  className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 mt-6 px-6 py-2 rounded-full font-bold text-white transition-colors"
                 >
                   Edit Profile
                 </button>
@@ -173,7 +173,7 @@ const ProfileEdit = () => {
               <button
                 type="button"
                 onClick={handleEditToggle}
-                className="px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700"
+                className="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full text-white"
               >
                 Cancel
               </button>

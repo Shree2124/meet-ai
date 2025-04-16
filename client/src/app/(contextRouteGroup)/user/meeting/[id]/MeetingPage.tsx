@@ -25,7 +25,8 @@ import NotParticipantPage from "./NotParticipantPage";
 // Utils
 import axiosInstance from "@/utils/axios";
 import { RootState } from "@/redux/store";
-import { IMeeting } from "../../../../../../../../meet-ai/server/src/models/meeting.model";
+
+
 
 interface MeetingPageProps {
   id: string;
@@ -42,7 +43,7 @@ export default function MeetingPage({ id }: MeetingPageProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isGuest, setIsGuest] = useState<boolean>(false);
   const [meeting, setMeeting] = useState<any>();
-  const [meetingDetails, setMeetingDetails] = useState<IMeeting | null>();
+  const [meetingDetails, setMeetingDetails] = useState<any | null>();
   const [isMeetingReady, setIsMeetingReady] = useState<boolean>(false);
 
   // Fetch meeting details
