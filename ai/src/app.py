@@ -3,11 +3,7 @@ import os
 
 load_dotenv()
 
-from flask import Flask, request, jsonify
-from pathlib import Path
-from transformers import pipeline
-from transformers import AutoTokenizer
-from transformers import AutoModelForSeq2SeqLM
+from flask import Flask
 from api.analysis import app as api
 
 
