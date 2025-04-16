@@ -2,10 +2,10 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { connectDatabase } from "./src/Database/db";
-import { corsOrigin, PORT } from "./src/config/envConfig";
+import { connectDatabase } from "./Database/db";
+import { corsOrigin, PORT } from "./config/envConfig";
 import passport from 'passport'
-import { githubStratergy, googleStratergy } from "./src/config/oauthStratergies";
+import { githubStratergy, googleStratergy } from "./config/oauthStratergies";
 
 /* Backend server initialised */
 const app = express();
@@ -54,10 +54,10 @@ app.get("/",(req, res) => {
   res.send("Meet AI backend!");
 });
 
-import userRouter from "./src/routes/user.routes";
-import tokenRouter from "./src/routes/token.routes";
-import meetingRouter from "./src/routes/meeting.routes"
-import summaryRouter from "./src/routes/summary.routes"
+import userRouter from "./routes/user.routes";
+import tokenRouter from "./routes/token.routes";
+import meetingRouter from "./routes/meeting.routes"
+import summaryRouter from "./routes/summary.routes"
 
 /* user Routes */
 app.use('/api/v1/user',userRouter)
