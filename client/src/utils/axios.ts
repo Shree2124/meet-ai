@@ -22,12 +22,15 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // If unauthorized, try refreshing the token
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/user/refresh-token")
+    ) {
       originalRequest._retry = true;
 
       try {
-        await axiosInstance.post(`/user/refresh-token`);
+        await axiosInstance.post("/user/refresh-token");
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         console.error("Error refreshing token:", refreshError);
@@ -38,5 +41,6 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default axiosInstance;
