@@ -1,6 +1,7 @@
 'use client';
 
 import { useUserContext } from "@/Context/userContext";
+import axiosInstance from "@/utils/axios";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,9 +14,7 @@ const SetAccessToken = () => {
   useEffect(() => {
     async function fetchAccessToken() {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/user/set-access-token', {
-          withCredentials: true
-        });
+        const response = await axiosInstance.get('user/set-access-token');
         console.log("Response: ", response.data.data);
         const accessToken = response.data.data; // Ensure this is the correct path to the token
         setToken(accessToken);
@@ -35,7 +34,7 @@ const SetAccessToken = () => {
 
   if (loading) {
     return (
-      <div className="loader-container fixed inset-0 flex items-center justify-center bg-white">
+      <div className="fixed inset-0 flex justify-center items-center bg-white loader-container">
         <h1 className='head fy'>MeetAi</h1>
         <h1 className='head sy'>AI-Powered</h1>
         <h1 className='head ty'>Meeting</h1>
