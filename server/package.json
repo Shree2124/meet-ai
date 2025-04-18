@@ -7,7 +7,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "nodemon -r dotenv/config  index.ts",
+    "dev": "nodemon -r dotenv/config  src/index.ts",
     "build": "npm install && tsc --project tsconfig.build.json",
 		"start": "node dist/index.js"
   },

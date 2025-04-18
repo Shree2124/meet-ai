@@ -165,8 +165,8 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken.toString(), options)
+    .cookie("refreshToken", refreshToken.toString(), options)
     .json(
       new ApiResponse(
         200,
@@ -595,7 +595,7 @@ const setOauthCookies = asyncHandler(async (req: any, res: Response) => {
   // console.log("auth: ", req.auth);
   res
     .cookie("accessToken", req.auth, options)
-    .redirect("http://localhost:3000/auth/setaccesstoken");
+    .redirect("https://meet-ai-olive.vercel.app/auth/setaccesstoken");
 });
 
 const setAccessToken = asyncHandler(async (req: any, res: Response) => {
