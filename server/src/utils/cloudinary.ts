@@ -28,8 +28,10 @@ const uploadOnCloudinary = async (
     ) {
       resourceType = "video";
     }
+    const rawFilename = path.basename(localFilePath);
+    const cleanPublicId = rawFilename.replace(/\.[^/.]+$/, "").replace(/\s+/g, "-");
     const uploadOptions: UploadApiOptions = {
-      public_id: localFilePath.split("\\").pop()?.split(".")[0],
+      public_id: cleanPublicId,
       resource_type: resourceType || "auto",
     };
     const response = await cloudinary.uploader.upload(
