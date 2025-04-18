@@ -32,13 +32,15 @@ const uploadOnCloudinary = async (
       [".mp4", ".avi", ".mov", ".wmv", ".flv", ".mkv", ".webm"].includes(fileExtension)
     ) {
       resourceType = "video";
+    } else {
+      resourceType = "raw";
     }
 
     const publicId = path.basename(localFilePath, fileExtension);
 
     const uploadOptions: UploadApiOptions = {
       public_id: publicId,
-      resource_type: resourceType, // <- Use correct resourceType
+      resource_type: resourceType,
       use_filename: true,
       unique_filename: false,
       overwrite: true,
@@ -47,12 +49,11 @@ const uploadOnCloudinary = async (
     const response = await cloudinary.uploader.upload(localFilePath, uploadOptions);
     console.log("Cloudinary upload successful:", response.secure_url);
 
-    fs.unlinkSync(localFilePath); // delete only after successful upload
+    fs.unlinkSync(localFilePath);
     return response;
   } catch (error: any) {
     console.error("Cloudinary Error:", error);
 
-    // Optional: only delete if file exists
     if (fs.existsSync(localFilePath)) {
       fs.unlinkSync(localFilePath);
     }
