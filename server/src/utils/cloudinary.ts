@@ -16,34 +16,47 @@ const uploadOnCloudinary = async (
   localFilePath: string
 ): Promise<UploadApiResponse | null> => {
   try {
-    if (!localFilePath) return null;
+    if (!localFilePath || !fs.existsSync(localFilePath)) {
+      console.error("File does not exist:", localFilePath);
+      return null;
+    }
+
     const fileExtension = path.extname(localFilePath).toLowerCase();
-    let resourceType: "raw" | "image" | "video" | "auto" = "raw";
+    let resourceType: "raw" | "image" | "video" | "auto" = "auto";
+
     if (
       [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"].includes(fileExtension)
     ) {
       resourceType = "image";
     } else if (
-      [".mp4", ".avi", ".mov", ".wmv", ".flv"].includes(fileExtension)
+      [".mp4", ".avi", ".mov", ".wmv", ".flv", ".mkv", ".webm"].includes(fileExtension)
     ) {
       resourceType = "video";
     }
+
+    const publicId = path.basename(localFilePath, fileExtension);
+
     const uploadOptions: UploadApiOptions = {
-      public_id: localFilePath.split("\\").pop()?.split(".")[0],
-      resource_type: "auto",
+      public_id: publicId,
+      resource_type: resourceType, // <- Use correct resourceType
+      use_filename: true,
+      unique_filename: false,
+      overwrite: true,
     };
-    const response = await cloudinary.uploader.upload(
-      localFilePath,
-      uploadOptions
-    );
-    if (response) {
-      fs.unlinkSync(localFilePath);
-      return response;
-    }
-    return null
-  } catch (error) {
-    fs.unlinkSync(localFilePath);
+
+    const response = await cloudinary.uploader.upload(localFilePath, uploadOptions);
+    console.log("Cloudinary upload successful:", response.secure_url);
+
+    fs.unlinkSync(localFilePath); // delete only after successful upload
+    return response;
+  } catch (error: any) {
     console.error("Cloudinary Error:", error);
+
+    // Optional: only delete if file exists
+    if (fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath);
+    }
+
     return null;
   }
 };

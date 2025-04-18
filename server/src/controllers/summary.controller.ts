@@ -197,7 +197,7 @@ const generateSummaryFile = asyncHandler(async (req: any, res: Response) => {
 
     try {
       const cloudinaryResult = await uploadOnCloudinary(filePath);
-      meeting.fileUrl = cloudinaryResult?.url;
+      meeting.fileUrl = cloudinaryResult?.secure_url;
       meeting.fileName = cloudinaryResult?.public_id;
       meeting.summary = req?.summary;
       await meeting?.save();
@@ -284,7 +284,7 @@ const generateSummaryFile2 = asyncHandler(async (req: any, res: Response) => {
       const cloudinaryResult = await uploadOnCloudinary(filePath);
       
       // Update meeting with file info
-      meeting.fileUrl = cloudinaryResult?.url;
+      meeting.fileUrl = cloudinaryResult?.secure_url;
       meeting.fileName = cloudinaryResult?.public_id;
       await meeting.save();
 
