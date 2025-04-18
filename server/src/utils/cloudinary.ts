@@ -44,6 +44,8 @@ const uploadOnCloudinary = async (
       use_filename: true,
       unique_filename: false,
       overwrite: true,
+      access_control: [{ access_type: "authenticated" }],
+      access_mode: "authenticated",
     };
 
     const response = await cloudinary.uploader.upload(localFilePath, uploadOptions);
