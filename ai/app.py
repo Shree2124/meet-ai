@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from flask_cors import CORS
 import os
 
 load_dotenv()
@@ -10,7 +11,7 @@ from src.api.analysis import app as api
 
 
 app = Flask(__name__)
-
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5000", "https://meet-ai-ekne.onrender.com"]}})
 app.register_blueprint(api, url_prefix="/api")
 
 

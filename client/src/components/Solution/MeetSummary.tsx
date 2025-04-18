@@ -94,16 +94,16 @@
 //   }, [meeting]);
 
 //   return (
-//     <div className="bg-gray-900 text-gray-300 w-full min-h-screen">
+//     <div className="bg-gray-900 w-full min-h-screen text-gray-300">
 //       <div>
 //         <IconButton onClick={handleBack} sx={{ color: "white", cursor: "pointer", zIndex: 30 }}>
 //           <CircleArrowLeftIcon height={"3rem"} width={"3rem"} />
 //         </IconButton>
 //       </div>
-//       <div className="container mx-auto p-6">
+//       <div className="mx-auto p-6 container">
 //         {/* Hero Section */}
-//         <header className=" mb-8">
-//           <h1 className="text-center text-4xl font-bold text-white shadow-md">
+//         <header className="mb-8">
+//           <h1 className="shadow-md font-bold text-white text-4xl text-center">
 //             Meeting Summary
 //           </h1>
 //         </header>
@@ -116,7 +116,7 @@
 //             marginBottom: "1.5rem",
 //           }}
 //         >
-//           <h2 className="text-xl font-semibold">Meeting Details</h2>
+//           <h2 className="font-semibold text-xl">Meeting Details</h2>
 //           <div>
 //             <p className="text-lg">
 //               <strong>Title:</strong> {meeting?.title}
@@ -134,8 +134,8 @@
 //         </Box>
 
 //         {/* Meeting Overview Card */}
-//         <div className="bg-gray-800 rounded-lg p-6 shadow-lg mb-6">
-//           <h2 className="text-xl font-semibold">Meeting Overview</h2>
+//         <div className="bg-gray-800 shadow-lg mb-6 p-6 rounded-lg">
+//           <h2 className="font-semibold text-xl">Meeting Overview</h2>
 //           <p>
 //             <strong>Host:</strong> {meeting?.hostDetails?.userName}
 //           </p>
@@ -160,34 +160,34 @@
 //         )}
 
 //         {/* Call to Action */}
-//         <div className="text-center mt-8">
-//           <button className="px-6 py-3 bg-green-500 rounded-md hover:bg-green-600">
+//         <div className="mt-8 text-center">
+//           <button className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-md">
 //             Schedule Next Meeting
 //           </button>
 //         </div>
 
 //         {showModal && (
-//           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-//             <div className="bg-gray-900 p-6 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto relative">
+//           <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+//             <div className="relative bg-gray-900 shadow-lg p-6 rounded-lg max-h-[80vh] overflow-y-auto">
 //               {/* Close Button */}
 //               <button
 //                 onClick={() => setShowModal(false)}
-//                 className="absolute top-3 right-3 text-gray-300 hover:text-white"
+//                 className="top-3 right-3 absolute text-gray-300 hover:text-white"
 //               >
 //                 ✖
 //               </button>
 
-//               <h2 className="text-xl font-bold text-white mb-4">
+//               <h2 className="mb-4 font-bold text-white text-xl">
 //                 Select File Type
 //               </h2>
 //               <div className="relative mb-4">
 //                 <select
 //                   value={selectedFileType}
 //                   onChange={handleChange}
-//                   className="bg-gray-700 text-white p-3 pr-7 w-full rounded-lg appearance-none cursor-pointer focus:outline-none border border-gray-700 hover:border-gray-500 focus:border-white"
+//                   className="bg-gray-700 p-3 pr-7 border border-gray-700 hover:border-gray-500 focus:border-white rounded-lg focus:outline-none w-full text-white appearance-none cursor-pointer"
 //                 >
 //                   <option
-//                     className="w-full pr-4 bg-gray-700 text-white"
+//                     className="bg-gray-700 pr-4 w-full text-white"
 //                     value=""
 //                     disabled
 //                   >
@@ -203,12 +203,12 @@
 //                     </option>
 //                   ))}
 //                 </select>
-//                 <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none text-white">
+//                 <div className="right-2 absolute inset-y-0 flex items-center text-white pointer-events-none">
 //                   ▼
 //                 </div>
 //               </div>
 
-//               {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+//               {error && <p className="mb-4 text-red-500 text-sm">{error}</p>}
 
 //               <button
 //                 onClick={handleGenerate}
@@ -221,7 +221,7 @@
 //               >
 //                 {loading ? (
 //                   <div className="flex justify-center items-center">
-//                     <LoaderCircle className="animate-spin text-white" size={24} />
+//                     <LoaderCircle className="text-white animate-spin" size={24} />
 //                   </div>
 //                 ) : (
 //                   "Generate"
@@ -267,7 +267,7 @@ const MeetingSummary = ({ id }: any) => {
   const handleGenerateSummary = async () => {
     try {
       setLoading(true);
-      const res: any = await axiosInstance.patch(
+      const res: any = await axiosInstance.post(
         `/summary/summary-file/${meeting?.roomId}`,
         {
           type: selectedFileType,
@@ -333,13 +333,13 @@ const MeetingSummary = ({ id }: any) => {
   }, [meeting]);
 
   return (
-    <div className="bg-gray-900 text-gray-300  w-full flex items-center justify-center overflow-y-hidden ">
-      <div className="w-full max-w-5xl p-6">
+    <div className="flex justify-center items-center bg-gray-900 w-full overflow-y-hidden text-gray-300">
+      <div className="p-6 w-full max-w-5xl">
         <IconButton onClick={handleBack} sx={{ color: "white", cursor: "pointer" }}>
           <CircleArrowLeftIcon height={"3rem"} width={"3rem"} />
         </IconButton>
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white">Meeting Summary</h1>
+        <header className="mb-8 text-center">
+          <h1 className="font-bold text-white text-4xl">Meeting Summary</h1>
         </header>
         <Box sx={{ bgcolor: "#1f2937", borderRadius: "1rem", padding: "1.5rem", mb: 3 }}>
           <Typography variant="h5" className="text-white">Meeting Details</Typography>
@@ -347,7 +347,7 @@ const MeetingSummary = ({ id }: any) => {
           <Typography className="text-lg"><strong>Description:</strong> {meeting?.description || 'N/A'}</Typography>
           <Typography className="text-lg"><strong>Date:</strong> {moment(meeting?.scheduledTime).format("MMMM Do YYYY") || 'N/A'}</Typography>
         </Box>
-        <Box className="bg-gray-800 rounded-lg p-6 shadow-lg mb-6">
+        <Box className="bg-gray-800 shadow-lg mb-6 p-6 rounded-lg">
           <Typography variant="h5" className="text-white">Meeting Overview</Typography>
           <Typography><strong>Host:</strong> {meeting?.hostDetails?.userName || 'N/A'}</Typography>
           <Typography><strong>Participants:</strong></Typography>
@@ -360,22 +360,22 @@ const MeetingSummary = ({ id }: any) => {
         ) : (
           <Typography variant="subtitle2" color="warning">Summary generation is not enabled for this meeting</Typography>
         )}
-        <div className="text-center mt-8">
-          <button className="px-6 py-3 bg-green-500 rounded-md hover:bg-green-600" onClick={() => router.replace('/user/dashboard')}>Schedule Next Meeting</button>
+        <div className="mt-8 text-center">
+          <button className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-md" onClick={() => router.replace('/user/dashboard')}>Schedule Next Meeting</button>
         </div>
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-gray-900 p-6 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto relative">
-              <button onClick={() => setShowModal(false)} className="absolute top-3 right-3 text-gray-300 hover:text-white">✖</button>
-              <Typography variant="h5" className="text-white mb-4">Select File Type</Typography>
-              <select value={selectedFileType} onChange={handleChange} className="bg-gray-700 text-white p-3 w-full rounded-lg border border-gray-700">
+          <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+            <div className="relative bg-gray-900 shadow-lg p-6 rounded-lg max-h-[80vh] overflow-y-auto">
+              <button onClick={() => setShowModal(false)} className="top-3 right-3 absolute text-gray-300 hover:text-white">✖</button>
+              <Typography variant="h5" className="mb-4 text-white">Select File Type</Typography>
+              <select value={selectedFileType} onChange={handleChange} className="bg-gray-700 p-3 border border-gray-700 rounded-lg w-full text-white">
                 <option value="" disabled>Select a file type...</option>
                 {Object.keys(fileIcons).map((type) => (
                   <option key={type} value={type}>{fileIcons[type]} {type.toUpperCase()}</option>
                 ))}
               </select>
-              {error && <Typography color="error" className="text-sm mt-4">{error}</Typography>}
-              <Button onClick={handleGenerate} className="w-full mt-4" disabled={!selectedFileType}>
+              {error && <Typography color="error" className="mt-4 text-sm">{error}</Typography>}
+              <Button onClick={handleGenerate} className="mt-4 w-full" disabled={!selectedFileType}>
                 {loading ? <LoaderCircle className="animate-spin" size={24} /> : "Generate"}
               </Button>
             </div>
