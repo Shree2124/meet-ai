@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware";
 import { addJoinedParticipant, createMeeting, endMeeting, getMeeting, sendEmailAtScheduledTime } from "../controllers/meeting.controller";
-import { get } from "http";
 
 const router = Router()
 router.route("/get-meeting/:id").get(getMeeting)

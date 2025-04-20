@@ -7,6 +7,7 @@ import { IUser, User } from "../models/user.model";
 import { ApiResponse } from "../utils/apiResponse";
 import { serverClient } from "../config/chatConfig";
 import { scheduleMeetingNotification } from "../utils/sendMail";
+import axios from "axios";
 
 const { ObjectId } = mongoose.Types;
 const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60;
@@ -342,10 +343,41 @@ const sendEmailAtScheduledTime = asyncHandler(
   }
 );
 
+
+const askQuestion = asyncHandler(async (req: any, res: Response) => {
+  const { question } = req.body;
+  const { meetingId } = req.params;
+
+  console.log("RoomId: ", meetingId);
+
+  const meeting: IMeeting | null = await Meeting.findOne({ roomId: meetingId });
+
+  if (!meeting) {
+    throw new ApiError(404, "Meeting not found!");
+  }
+
+  const questionData = {
+    question: question,
+    meetingId: meeting._id,
+    transcription_text: meeting.dialogues,
+  };
+
+  const response: any = await axios.post(`${process.env.FLASK_API_URL}/ask`, questionData)
+  console.log("Response from Flask API: ", response.data);
+
+  const { answer } = response?.data;
+
+  console.log("Answer: ", answer);
+  console.log("Question: ", question);
+
+  return res.status(200).json(new ApiResponse(200, { answer, question }, "Question asked successfully!"));
+})
+
 export {
   createMeeting,
   addJoinedParticipant,
   endMeeting,
   getMeeting,
   sendEmailAtScheduledTime,
+  askQuestion
 };

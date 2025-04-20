@@ -33,6 +33,7 @@ def ask():
 
     return jsonify({"question": question, "answer": answer})
 
+
 @app.route("/analyze", methods=["POST"])
 def analyze():
     print("/analyze")
@@ -368,3 +369,4 @@ def generate_pdf():
         as_attachment=True,
         download_name="meeting_summary.pdf",
     )
+    
