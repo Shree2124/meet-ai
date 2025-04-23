@@ -7,6 +7,7 @@ import { fetchUser } from "@/redux/slices/authSlice";
 import axiosInstance from "@/utils/axios";
 import { Avatar } from "@mui/material";
 import { navigation } from "@/constants/navigationItems";
+import MeetAILogoContainer from "@/constants/Logo";
 
 // SVG Icons
 const MenuIcon = () => (
@@ -71,7 +72,7 @@ function Navbar() {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        dropdownRef.current && 
+        dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node) &&
         menuButtonRef.current &&
         !menuButtonRef.current.contains(event.target as Node)
@@ -122,7 +123,7 @@ function Navbar() {
     } else {
       router.push(url);
     }
-    
+
     setOpenNavigation(false);
   };
 
@@ -138,31 +139,15 @@ function Navbar() {
   };
 
   return (
-    <header 
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-black/95 shadow-lg backdrop-blur-md py-2' : 'bg-black/80 backdrop-blur-sm py-4'
-      } border-b border-gray-800`}
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-black/95 shadow-lg backdrop-blur-md py-2' : 'bg-black/80 backdrop-blur-sm py-4'
+        } border-b border-gray-800`}
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="flex justify-between items-center h-16">
           {/* Text Logo */}
-          <div className="flex-shrink-0">
-            <Link 
-              href="#hero" 
-              className="group block"
-              onClick={() => handleOptionClick("#hero")}
-            >
-              <div className="flex items-center">
-                <span className="bg-clip-text bg-gradient-to-r from-blue-400 group-hover:from-blue-500 to-purple-600 group-hover:to-purple-700 font-bold text-transparent text-2xl md:text-3xl transition-all duration-300">
-                  Meet
-                </span>
-                <span className="relative font-bold text-white text-2xl md:text-3xl transition-all duration-300">
-                  AI
-                  <span className="-top-1 -right-1 absolute bg-blue-500 rounded-full w-2 h-2 animate-pulse"></span>
-                </span>
-              </div>
-            </Link>
-          </div>
+
+          <MeetAILogoContainer />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-1 lg:space-x-2">
@@ -202,10 +187,9 @@ function Navbar() {
                   </span>
                 </button>
 
-                <div 
-                  className={`absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-700 transition-all duration-300 transform origin-top-right ${
-                    isDropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'
-                  }`}
+                <div
+                  className={`absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-700 transition-all duration-300 transform origin-top-right ${isDropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'
+                    }`}
                 >
                   <Link
                     href="/profile"
@@ -273,9 +257,8 @@ function Navbar() {
 
       {/* Mobile Navigation Menu */}
       <div
-        className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
-          openNavigation ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
-        }`}
+        className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${openNavigation ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+          }`}
       >
         <div className="space-y-1 bg-gray-900/95 backdrop-blur-sm px-2 pt-2 pb-3">
           {navigation
@@ -290,7 +273,7 @@ function Navbar() {
                 {item.title}
               </button>
             ))}
-          
+
           {user ? (
             <>
               <div className="pt-4 pb-3 border-gray-700 border-t">

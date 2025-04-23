@@ -29,6 +29,7 @@
     "@stream-io/node-sdk": "^0.4.0",
     "@stream-io/video-react-sdk": "^1.2.23",
     "@tabler/icons-react": "^3.30.0",
+    "@types/three": "^0.175.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "chart.js": "^4.4.6",
@@ -62,7 +63,9 @@
     "stream-chat": "^8.42.0",
     "stream-chat-react": "^12.5.0",
     "tailwind-merge": "^2.4.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "three": "^0.175.0",
+    "three.js": "^0.77.1"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
