@@ -1,288 +1,366 @@
-// @ts-ignore
-
-import React, { useEffect, useState } from "react";
-import { disablePageScroll, enablePageScroll } from "scroll-lock";
-import Image from "next/image";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { navigation } from "@/constants/navigationItems";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBars,
-  faTimes,
-  faCaretDown,
-  faCaretUp,
-  faArrowRightFromBracket,
-} from "@fortawesome/free-solid-svg-icons";
-import { Avatar, Box, IconButton, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchUser } from "@/redux/slices/authSlice";
-import axios from "axios";
 import axiosInstance from "@/utils/axios";
-import { useRouter } from "next/navigation";
-import Logo from "@/components/Logo";
+import { Avatar } from "@mui/material";
+import { navigation } from "@/constants/navigationItems";
+
+// SVG Icons
+const MenuIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <line x1="3" y1="12" x2="21" y2="12"></line>
+    <line x1="3" y1="6" x2="21" y2="6"></line>
+    <line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
+const ChevronDownIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+    <polyline points="6 9 12 15 18 9"></polyline>
+  </svg>
+);
+
+const ChevronUpIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+);
 
 function Navbar() {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
+  const [openNavigation, setOpenNavigation] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Fetch user information on component mount
+  // Fetch user on mount
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  // console.log("Avatar: ", user.avatar);
-  
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
 
-  const [openNavigation, setOpenNavigation] = useState(false);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const router = useRouter()
-  const toggleNavigation = () => {
-    setOpenNavigation((prev) => !prev);
-    if (!openNavigation) {
-      disablePageScroll();
-    } else {
-      enablePageScroll();
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target as Node) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
     }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Lock scroll when mobile menu is open
+  useEffect(() => {
+    if (openNavigation) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [openNavigation]);
+
+  const toggleNavigation = () => {
+    setOpenNavigation(prev => !prev);
   };
 
   const handleDropdownToggle = (event: React.MouseEvent) => {
     event.stopPropagation();
-    setDropdownOpen((prev) => !prev);
+    setDropdownOpen(prev => !prev);
   };
 
-const handleOptionClick=(url:string)=>{
-  const sectionId=url.replace("#","")
-  const section=document.getElementById(sectionId);
-  if(section){
-    section.scrollIntoView({behavior:"smooth"})
-  }
-  setOpenNavigation(false);
+  const handleOptionClick = (url: string) => {
+    if (url.startsWith('#')) {
+      const sectionId = url.replace("#", "");
+      try {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      } catch (error) {
+        console.error("Error scrolling to section:", error);
+      }
+    } else {
+      router.push(url);
+    }
+    
+    setOpenNavigation(false);
+  };
 
-}
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.get(`/user/logout`);
+      router.replace("/");
+      setDropdownOpen(false);
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Handle logout failure
+    }
+  };
 
-const handleLogout = async() => {
-  const response = await axiosInstance.get(
-    `/user/logout`
-  );
-  console.log("Response: ", response.data);
-  router.replace("/")
-}
   return (
-    <div className="relative">
-      <div
-        className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 transition-all duration-300 ${
-          openNavigation ? "bg-black/50" : "bg-black/90 backdrop-blur-sm"
-        }`}
-      >
-        <div className="flex items-center px-4 lg:px-3 xl:px-6">
-          <Link href="#hero" className="block xl:mr-8 w-[12rem]">
-            <Logo width={"4rem"}/>
-          </Link>
-
-          {/* Navigation for Larger Devices */}
-          <div className="hidden lg:flex flex-grow justify-center space-x-8">
-            {navigation.map(
-              (item) =>
-                !item.onlyMobile && (
-                  <button
-                   key={item.id}
-                   onClick={()=>handleOptionClick(item.url)}
-                   className="block px-6 py-6 md:py-8 font-roboto font-normal text-[16px] text-n-1 hover:text-color-1 uppercase transition-colors"
-                  >
-                        {item.title}
-                  </button>
-                )
-            )}
+    <header 
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? 'bg-black/95 shadow-lg backdrop-blur-md py-2' : 'bg-black/80 backdrop-blur-sm py-4'
+      } border-b border-gray-800`}
+    >
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="flex justify-between items-center h-16">
+          {/* Text Logo */}
+          <div className="flex-shrink-0">
+            <Link 
+              href="#hero" 
+              className="group block"
+              onClick={() => handleOptionClick("#hero")}
+            >
+              <div className="flex items-center">
+                <span className="bg-clip-text bg-gradient-to-r from-blue-400 group-hover:from-blue-500 to-purple-600 group-hover:to-purple-700 font-bold text-transparent text-2xl md:text-3xl transition-all duration-300">
+                  Meet
+                </span>
+                <span className="relative font-bold text-white text-2xl md:text-3xl transition-all duration-300">
+                  AI
+                  <span className="-top-1 -right-1 absolute bg-blue-500 rounded-full w-2 h-2 animate-pulse"></span>
+                </span>
+              </div>
+            </Link>
           </div>
 
-          {/* Buttons for Larger Devices */}
-          <div className="hidden relative lg:flex items-center space-x-4 ml-auto">
-            {user ? (
-              <Box position="relative">
-                <Box display="flex" alignItems="center">
-                  <Avatar
-                    src={
-                      user.avatar ||
-                      "https://www.w3schools.com/howto/img_avatar.png"
-                    }
-                  />
-                  <Typography sx={{ ml: 1 }}>
-                    {user?.userName || "User"}
-                  </Typography>
-                  <IconButton onClick={handleDropdownToggle}>
-                  <FontAwesomeIcon
-                    color="white"
-                    icon={isDropdownOpen ? { prefix: 'fas', iconName: 'caret-up' } : { prefix: 'fas', iconName: 'caret-down' }}
-                  />
-                  </IconButton>
-                </Box>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-1 lg:space-x-2">
+            {navigation
+              .filter(item => !item.onlyMobile)
+              .map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => handleOptionClick(item.url)}
+                  className="group relative px-3 lg:px-4 py-2 font-medium text-gray-200 hover:text-white text-sm lg:text-base"
+                >
+                  {item.title}
+                  <span className="bottom-0 left-1/2 absolute bg-gradient-to-r from-blue-400 to-purple-600 w-0 group-hover:w-4/5 h-0.5 transition-all -translate-x-1/2 duration-300 transform"></span>
+                </button>
+              ))}
+          </nav>
 
-                {isDropdownOpen && (
-                  <Box
-                    sx={{
-                      marginTop: "0.5rem",
-                      position: "absolute",
-                      top: "100%",
-                      right: 0,
-                      bgcolor: "#313131",
-                      boxShadow: 1,
-                      borderRadius: 1,
-                      zIndex: 999,
-                      padding: "0.5rem"
-                    }}
+          {/* Authentication & User Menu (Desktop) */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  ref={menuButtonRef}
+                  onClick={handleDropdownToggle}
+                  className="flex items-center space-x-2 hover:bg-gray-800/50 px-3 py-2 rounded-md transition-colors"
+                >
+                  <Avatar
+                    src={user.avatar || "https://www.w3schools.com/howto/img_avatar.png"}
+                    alt={user?.userName || "User"}
+                    sx={{ width: 32, height: 32 }}
+                  />
+                  <span className="font-medium text-gray-200 text-sm">
+                    {user?.userName || "User"}
+                  </span>
+                  <span className="transition-transform duration-300">
+                    {isDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                  </span>
+                </button>
+
+                <div 
+                  className={`absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-700 transition-all duration-300 transform origin-top-right ${
+                    isDropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'
+                  }`}
+                >
+                  <Link
+                    href="/profile"
+                    className="block hover:bg-gray-700 px-4 py-2 text-gray-200 hover:text-white text-sm transition-colors"
+                    onClick={() => setDropdownOpen(false)}
                   >
-                    <Link
-                      href="profile"
-                      className="block hover:bg-[#434244] px-4 py-2 rounded-md"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        toggleNavigation();
-                      }}
-                    >
-                      Profile
-                    </Link>
-                    <button
-                      className="block hover:bg-[#434244] px-4 py-2 rounded-md"
-                      onClick={() => {
-                        handleLogout()
-                        setDropdownOpen(false);
-                  
-                      }}
-                    >
-                      Logout
-                    </button>
-                    <Link
-                      href="/user/dashboard"
-                      className="block hover:bg-[#434244] px-4 py-2 rounded-md"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Dashboard
-                    </Link>
-                  </Box>
-                )}
-              </Box>
+                    Profile
+                  </Link>
+                  <Link
+                    href="/user/dashboard"
+                    className="block hover:bg-gray-700 px-4 py-2 text-gray-200 hover:text-white text-sm transition-colors"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    className="block hover:bg-gray-700 px-4 py-2 w-full text-gray-200 hover:text-white text-sm text-left transition-colors"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
             ) : (
               <>
                 <Link
-                  href="auth/register"
-                  className="text-n-1/50 hover:text-n-1 transition-colors button"
+                  href="/auth/register"
+                  className="group relative hover:bg-purple-500/20 px-4 py-2 border border-purple-500 rounded-md overflow-hidden font-medium text-white text-sm transition-all duration-300"
                 >
-                  Sign up
+                  <span className="z-10 relative">Sign up</span>
+                  <span className="bottom-0 left-0 absolute bg-purple-500/10 w-0 group-hover:w-full h-full transition-all duration-300"></span>
                 </Link>
                 <Link
-                  href="auth/login"
-                  className="flex items-center space-x-2 bg-primary-gradient hover:shadow-brand-purple-500/80 hover:shadow-md px-6 py-3 rounded-lg font-semibold text-white hover:text-white/80 text-sm leading-none whitespace-nowrap transition duration-300 ease-in-out"
+                  href="/auth/login"
+                  className="group relative bg-gradient-to-r from-blue-600 hover:from-blue-700 to-purple-600 hover:to-purple-700 px-5 py-2 rounded-md overflow-hidden font-medium text-white text-sm transition-all duration-300"
                 >
-                  <span>Sign in</span>
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M8.366 17.648a1.2 1.2 0 0 1 0-1.696L12.318 12 8.366 8.048a1.2 1.2 0 1 1 1.697-1.696l4.8 4.8a1.2 1.2 0 0 1 0 1.696l-4.8 4.8a1.2 1.2 0 0 1-1.697 0Z"
-                      fill="currentColor"
-                    ></path>
-                  </svg>
+                  <span className="z-10 relative flex items-center">
+                    Sign in
+                    <svg className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1 duration-300 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                  <span className="top-0 left-0 absolute bg-white/10 opacity-0 group-hover:opacity-100 w-full h-full transition-opacity duration-300"></span>
                 </Link>
               </>
             )}
           </div>
 
+          {/* Mobile menu button */}
           <button
-            aria-label="Toggle Navigation"
-            className="lg:hidden z-10 relative ml-auto px-3"
+            type="button"
+            className="md:hidden bg-gray-800/50 p-2 rounded-md text-gray-400 hover:text-white transition-colors"
             onClick={toggleNavigation}
+            aria-expanded={openNavigation}
           >
-            <FontAwesomeIcon
-              icon={{ iconName: openNavigation ? 'times' : 'bars', prefix: 'fas' }}
-              className="text-gray-600 transition-transform duration-300"
-            />
+            <span className="sr-only">
+              {openNavigation ? 'Close menu' : 'Open menu'}
+            </span>
+            <span className="transition-opacity duration-300">
+              {openNavigation ? <CloseIcon /> : <MenuIcon />}
+            </span>
           </button>
         </div>
       </div>
 
-      {/* Overlay and Menu */}
+      {/* Mobile Navigation Menu */}
       <div
-        className={`fixed inset-0 z-40 transition-opacity duration-300 ${
-          openNavigation
-            ? "opacity-100 lg:opacity-0 md:visible"
-            : "opacity-0 pointer-events-none"
+        className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+          openNavigation ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        {openNavigation && (
-          <div
-            className="absolute inset-0 bg-black/80"
-            onClick={toggleNavigation}
-          ></div>
-        )}
-        <nav
-          className={`fixed top-0 left-0 right-0 bottom-0 bg-black/80 flex flex-col items-center justify-center transition-transform duration-500 ease-in-out ${
-            openNavigation ? "translate-x-0" : "translate-x-full"
-          } z-50 md:flex lg:hidden`}
-        >
-          <div className="flex flex-col items-center mt-4">
-            {navigation.map(
-              (item) =>
-                !item.onlyMobile && (
+        <div className="space-y-1 bg-gray-900/95 backdrop-blur-sm px-2 pt-2 pb-3">
+          {navigation
+            .filter(item => !item.onlyMobile)
+            .map((item, index) => (
+              <button
+                key={item.id}
+                onClick={() => handleOptionClick(item.url)}
+                className="block hover:bg-gray-700 px-3 py-2 rounded-md w-full font-medium text-gray-300 hover:text-white text-base text-left transition-all duration-300 transform"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {item.title}
+              </button>
+            ))}
+          
+          {user ? (
+            <>
+              <div className="pt-4 pb-3 border-gray-700 border-t">
+                <div className="flex items-center px-3">
+                  <div className="flex-shrink-0">
+                    <Avatar
+                      src={user.avatar || "https://www.w3schools.com/howto/img_avatar.png"}
+                      alt={user?.userName || "User"}
+                      sx={{ width: 40, height: 40 }}
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-medium text-white text-base">{user?.userName || "User"}</div>
+                  </div>
+                </div>
+                <div className="space-y-1 mt-3 px-2">
                   <Link
-                    key={item.id}
-                    href={item.url}
-                    onClick={toggleNavigation}
-                    className={`block text-[16px] uppercase text-n-1 transition-colors hover:text-color-1 ${
-                      item.onlyMobile ? "lg:hidden" : ""
-                    } px-6 py-6 md:py-8 font-roboto font-normal`}
+                    href="/profile"
+                    className="block hover:bg-gray-700 px-3 py-2 rounded-md font-medium text-gray-300 hover:text-white text-base transition-colors"
+                    onClick={() => setOpenNavigation(false)}
                   >
-                    {item.title}
+                    Profile
                   </Link>
-                )
-            )}
-
-            {user ? (
-              <>
+                  <Link
+                    href="/user/dashboard"
+                    className="block hover:bg-gray-700 px-3 py-2 rounded-md font-medium text-gray-300 hover:text-white text-base transition-colors"
+                    onClick={() => setOpenNavigation(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    className="block hover:bg-gray-700 px-3 py-2 rounded-md w-full font-medium text-gray-300 hover:text-white text-base text-left transition-colors"
+                    onClick={() => {
+                      handleLogout();
+                      setOpenNavigation(false);
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="pt-4 pb-3 border-gray-700 border-t">
+              <div className="flex flex-col space-y-3 px-2">
                 <Link
-                  href="user/dashboard"
-                  onClick={toggleNavigation}
-                  className="flex justify-between items-center px-6 py-6 md:py-8 font-roboto font-normal text-[16px] text-n-1 hover:text-color-1 uppercase transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <button
-                  onClick={() => {
-                    // Add your logout functionality here
-                    handleLogout()
-                  }}
-                  className="flex justify-between items-center px-6 py-6 md:py-8 font-roboto font-normal text-[16px] text-n-1 hover:text-color-1 uppercase transition-colors"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="auth/register"
-                  className="py-6 text-n-1 hover:text-color-1 text-xl uppercase transition-colors"
+                  href="/auth/register"
+                  className="block hover:bg-purple-500/20 px-4 py-2 border border-purple-500 rounded-md font-medium text-white text-base text-center transition-colors"
+                  onClick={() => setOpenNavigation(false)}
                 >
                   Sign up
                 </Link>
                 <Link
-                  href="auth/login"
-                  className="bg-primary-gradient px-6 py-3 rounded-lg text-white hover:text-white/80 text-xl uppercase"
+                  href="/auth/login"
+                  className="block bg-gradient-to-r from-blue-600 hover:from-blue-700 to-purple-600 hover:to-purple-700 px-4 py-2 rounded-md font-medium text-white text-base text-center transition-colors"
+                  onClick={() => setOpenNavigation(false)}
                 >
-                  Sign in
+                  <span className="flex justify-center items-center">
+                    Sign in
+                    <svg className="ml-1 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
                 </Link>
-              </>
-            )}
-          </div>
-        </nav>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </header>
   );
 }
 
