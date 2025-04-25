@@ -28,14 +28,14 @@ export const HoverEffect = ({
         <Link
           href={item?.link}
           key={item?.link}
-          className="relative group  block p-2 h-full w-full"
+          className="group block relative p-2 w-full h-full"
           onMouseEnter={() => setHoveredIndex(idx)}
           onMouseLeave={() => setHoveredIndex(null)}
         >
           <AnimatePresence>
             {hoveredIndex === idx && (
               <motion.span
-                className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
+                className="block absolute inset-0 bg-neutral-200 dark:bg-slate-800/[0.8] rounded-3xl w-full h-full"
                 layoutId="hoverBackground"
                 initial={{ opacity: 0 }}
                 animate={{
@@ -73,7 +73,7 @@ export const Card = ({
         className
       )}
     >
-      <div className="relative z-50">
+      <div className="z-50 relative">
         <div className="p-4">{children}</div>
       </div>
     </div>

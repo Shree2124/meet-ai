@@ -73,8 +73,8 @@ export default function LandingPage() {
           {/* <section id="contact">
             <Contact />
           </section> */}
-          {/* <Footer /> */}
-          <Copyright />
+          <Footer />
+          
         </div>
       )}
     </>
