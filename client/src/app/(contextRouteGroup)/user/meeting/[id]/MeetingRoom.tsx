@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
@@ -58,6 +58,8 @@ const MeetingRoom = () => {
   const [channel, setChannel] = useState<any>(null);
   const [meeting, setMeeting] = useState<any>({});
   const [isMeetingEnded, setIsMeetingEnded] = useState<boolean>(false);
+  const recognitionRef = useRef<any>(null);
+  const isRecognizingRef = useRef(false);
   const client = useStreamVideoClient();
   // const { user: userInfo } = useAuth();
   const userInfo = useSelector((state: RootState) => state?.auth?.user);
@@ -70,39 +72,72 @@ const MeetingRoom = () => {
 
   const sendSpeech = async (text: string) => {
     try {
-      const textToSend = `${userInfo?.userName}: ${text}`;
-      const res = await axiosInstance.patch("/summary/add-dialogue", {
-        dialogue: textToSend,
-        meetingId: call?.cid,
-      });
+      if (!text || !call?.cid) return;
+
+      const payload = {
+        dialogue: `${userInfo?.userName}: ${text}`,
+        meetingId: call.cid,
+        timestamp: Date.now(),
+      };
+
+      await axiosInstance.patch("/summary/add-dialogue", payload);
     } catch (error) {
       console.error("Error sending speech:", error);
     }
   };
 
   useEffect(() => {
-    if ("webkitSpeechRecognition" in window) {
-      const speechRecognition = new window.webkitSpeechRecognition();
-      speechRecognition.continuous = true;
-      speechRecognition.interimResults = true;
-      speechRecognition.lang = "en-IN";
-
-      speechRecognition.onresult = (event) => {
-        const updatedTranscript = Array.from(event.results)
-          .map((result) => result[0].transcript)
-          .join("");
-        setTranscript(updatedTranscript);
-        console.log("Updated Transcript:", updatedTranscript);
-      };
-
-      speechRecognition.onerror = (event) => {
-        console.error("Speech recognition error detected:", event.error);
-      };
-
-      setRecognition(speechRecognition);
-    } else {
-      alert("Browser does not support speech recognition. Please use Chrome.");
+    if (!("webkitSpeechRecognition" in window)) {
+      alert("Speech recognition not supported. Please use Chrome.");
+      return;
     }
+
+    const recognition = new (window as any).webkitSpeechRecognition();
+
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-IN";
+
+    recognition.onresult = (event: any) => {
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i];
+
+        // - ONLY send final sentences
+        if (result.isFinal) {
+          const text = result[0].transcript.trim();
+
+          if (text.length > 2) {
+            sendSpeech(text);
+          }
+        }
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error);
+    };
+
+    recognition.onend = () => {
+      isRecognizingRef.current = false;
+
+      // - Auto-restart if mic still unmuted
+      if (!isMute) {
+        try {
+          recognition.start();
+          isRecognizingRef.current = true;
+        } catch (err) {
+          console.warn("Restart recognition failed:", err);
+        }
+      }
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      recognition.stop();
+      recognitionRef.current = null;
+      isRecognizingRef.current = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -123,32 +158,34 @@ const MeetingRoom = () => {
   }, [layout]);
 
   useEffect(() => {
-    if (recognition) {
-      if (!isMute) {
+    const recognition = recognitionRef.current;
+    if (!recognition) return;
+
+    // Mic ON - start recognition
+    if (!isMute && !isRecognizingRef.current) {
+      try {
         recognition.start();
-        console.log("Started listening...");
-      } else {
-        recognition.stop();
-        console.log("Stopped listening...");
-        console.log("Transcript:- ",transcript);
-        if (transcript) {
-          sendSpeech(transcript);
-        }
+        isRecognizingRef.current = true;
+        console.log("Speech recognition started");
+      } catch (err) {
+        console.warn("Recognition already started:", err);
       }
     }
-    return () => {
-      if (recognition) {
-        recognition.stop();
-      }
-    };
-  }, [isMute, recognition]);
+
+    // Mic OFF - stop recognition
+    if (isMute && isRecognizingRef.current) {
+      recognition.stop();
+      isRecognizingRef.current = false;
+      console.log("Speech recognition stopped");
+    }
+  }, [isMute]);
 
   const addNewUserToChannel = async (newUserId: any) => {
     try {
-      //TODO:
-      // console.log("USer", userInfo);
-      // console.log("Id", newUserId);
-      // console.log(chatId?.chatChannelId);
+      // TODO:
+      console.log("USer", userInfo);
+      console.log("Id", newUserId);
+      console.log(chatId?.chatChannelId);
 
       if (!chatId?.chatChannelId) return;
       const chatChannel = chatClient.channel(
@@ -298,14 +335,12 @@ const MeetingRoom = () => {
   // );
 
   if (callingState !== CallingState.JOINED) {
-
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <Loader2 className="animate-spin text-indigo-500" size={50} />
-    </div>
-  );
-}
-
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin text-indigo-500" size={50} />
+      </div>
+    );
+  }
 
   return (
     <section className="relative h-screen w-full overflow-hidden text-white">

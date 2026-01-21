@@ -317,7 +317,7 @@ export default function Login() {
           <div className="flex flex-col space-y-3">
             <p className="mb-2 text-neutral-400 text-sm text-center">Or continue with</p>
             
-            <Link href="http://localhost:5000/api/v1/user/oauth/github">
+            {/* <Link href="http://localhost:5000/api/v1/user/oauth/github">
               <button
                 type="button"
                 className="group/btn relative flex justify-center items-center space-x-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-md w-full h-11 font-medium text-white transition-colors"
@@ -326,9 +326,9 @@ export default function Login() {
                 <span>GitHub</span>
                 <BottomGradient />
               </button>
-            </Link>
+            </Link> */}
             
-            <Link href="http://localhost:5000/api/v1/user/oauth/google">
+            {/* <Link href="https://meet-ai-ekne.onrender.com/api/v1/user/oauth/google">
               <button
                 type="button"
                 className="group/btn relative flex justify-center items-center space-x-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-md w-full h-11 font-medium text-white transition-colors"
@@ -337,7 +337,7 @@ export default function Login() {
                 <span>Google</span>
                 <BottomGradient />
               </button>
-            </Link>
+            </Link> */}
           </div>
         </>
       )}

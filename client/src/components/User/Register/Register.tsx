@@ -524,7 +524,7 @@ export default function Register() {
       <div className="flex flex-col space-y-3">
         <p className="mb-2 text-neutral-400 text-sm text-center">Or continue with</p>
         
-        <Link href="http://localhost:5000/api/v1/user/oauth/github">
+        {/* <Link href="http://localhost:5000/api/v1/user/oauth/github">
           <button
             type="button"
             className="group/btn relative flex justify-center items-center space-x-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-md w-full h-11 font-medium text-white transition-colors"
@@ -544,7 +544,7 @@ export default function Register() {
             <span>Google</span>
             <BottomGradient />
           </button>
-        </Link>
+        </Link> */}
       </div>
 
       {/* Verification Modal */}
