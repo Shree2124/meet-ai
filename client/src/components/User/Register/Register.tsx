@@ -31,26 +31,26 @@ export default function Register() {
   const [validUserName, setValidUserName] = useState<boolean>(false);
   const [userNameFocus, setUserNameFocus] = useState<boolean>(false);
   const [userNameError, setUserNameError] = useState<string>("");
-  
+
   const [password, setPassword] = useState<string>("");
   const [validPassword, setValidPassword] = useState<boolean>(false);
   const [passwordFocus, setPasswordFocus] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  
+
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [validConfirmPassword, setValidConfirmPassword] = useState<boolean>(false);
   const [confirmPasswordFocus, setConfirmPasswordFocus] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  
+
   const [email, setEmail] = useState<string>("");
   const [validEmail, setValidEmail] = useState<boolean>(false);
   const [emailFocus, setEmailFocus] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<string>("");
-  
+
   const [firstName, setFirstName] = useState<string>("");
   const [validFirstName, setValidFirstName] = useState<boolean>(false);
   const [firstNameFocus, setFirstNameFocus] = useState<boolean>(false);
-  
+
   const [lastName, setLastName] = useState<string>("");
   const [validLastName, setValidLastName] = useState<boolean>(false);
   const [lastNameFocus, setLastNameFocus] = useState<boolean>(false);
@@ -81,11 +81,11 @@ export default function Register() {
   useEffect(() => {
     setValidEmail(EMAIL_REGEX.test(email));
   }, [EMAIL_REGEX, email]);
-  
+
   useEffect(() => {
     setValidFirstName(NAME_REGEX.test(firstName));
   }, [NAME_REGEX, firstName]);
-  
+
   useEffect(() => {
     setValidLastName(NAME_REGEX.test(lastName));
   }, [NAME_REGEX, lastName]);
@@ -122,14 +122,14 @@ export default function Register() {
         try {
           // Simulate API call to check username availability
           // In a real app, you would call your API here
-          const response = await new Promise<{available: boolean}>((resolve) => {
+          const response = await new Promise<{ available: boolean }>((resolve) => {
             setTimeout(() => {
               // Random result for demonstration
               const available = Math.random() > 0.3;
-              resolve({available});
+              resolve({ available });
             }, 500);
           });
-          
+
           if (!response.available) {
             setUserNameError("Username is already taken");
             setValidUserName(false);
@@ -141,13 +141,13 @@ export default function Register() {
         }
       }
     };
-    
+
     const timeoutId = setTimeout(() => {
       if (userName.length >= 4) {
         checkUserName();
       }
     }, 500);
-    
+
     return () => clearTimeout(timeoutId);
   }, [userName, validUserName, formSubmitted]);
 
@@ -156,14 +156,14 @@ export default function Register() {
     e.preventDefault();
     setFormSubmitted(true);
     setLoading(true);
-    
+
     // Final form validation
     if (!validUserName || !validPassword || !validEmail || !validFirstName || !validLastName || !validConfirmPassword) {
       setError("Please fix the form errors before submitting.");
       setLoading(false);
       return;
     }
-    
+
     // Prepare data for submission
     const data = {
       userName,
@@ -174,7 +174,7 @@ export default function Register() {
 
     try {
       const response: any = await axiosInstance.post(`/user/register`, data);
-      
+
       if (response.status === 200) {
         setToken(response?.data?.data);
         setShowModal(true);
@@ -182,7 +182,7 @@ export default function Register() {
       }
     } catch (err: any) {
       console.error("Error during registration:", err.response?.data || err.message);
-      
+
       const regex = /Error: (.*?)(<|\\n|$)/;
       const match = err.response?.data?.toString()?.match(regex);
 
@@ -212,26 +212,26 @@ export default function Register() {
     e.preventDefault();
     setVerifyLoading(true);
     setCodeError("");
-    
+
     if (verificationCode.length !== 6) {
       setCodeError("Please enter a valid 6-digit code");
       setVerifyLoading(false);
       return;
     }
-    
+
     try {
       const response = await axiosInstance.post(`/user/verify`, {
         activationToken: token,
         otp: verificationCode,
       });
-      
+
       console.log("Verification successful:", response.data);
       // Close modal and redirect to login
       closeModal();
       router.push("/auth/login?verified=true");
     } catch (err: any) {
       setCodeError(
-        err.response?.data?.message || 
+        err.response?.data?.message ||
         "Invalid verification code. Please try again."
       );
       console.error("Error during verification:", err.response?.data || err.message);
@@ -267,7 +267,7 @@ export default function Register() {
   return (
     <div className="bg-black shadow-input mx-auto p-6 md:p-8 rounded-none md:rounded-2xl w-full max-w-md text-white">
       <h1 className="mb-6 font-bold text-2xl">Create your account</h1>
-      
+
       {error && (
         <Alert className="bg-red-50 dark:bg-red-900/20 mb-4 border-red-200 dark:border-red-800">
           <AlertDescription className="text-red-800 dark:text-red-300">
@@ -307,7 +307,7 @@ export default function Register() {
               </p>
             )}
           </LabelInputContainer>
-          
+
           <LabelInputContainer>
             <Label htmlFor="lastname" className="flex items-center gap-2">
               Last name
@@ -522,8 +522,8 @@ export default function Register() {
       <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent my-8 w-full h-px" />
 
       <div className="flex flex-col space-y-3">
-        <p className="mb-2 text-neutral-400 text-sm text-center">Or continue with</p>
-        
+        {/* <p className="mb-2 text-neutral-400 text-sm text-center">Or continue with</p> */}
+
         {/* <Link href="http://localhost:5000/api/v1/user/oauth/github">
           <button
             type="button"
@@ -553,14 +553,14 @@ export default function Register() {
           <div className="bg-zinc-900 shadow-xl mx-4 p-6 border border-zinc-800 rounded-lg w-full max-w-sm">
             <h2 className="mb-4 font-bold text-xl">Verify Your Email</h2>
             <p className="mb-4 text-neutral-300">
-              We've sent a verification code to <span className="font-medium text-white">{email}</span>. 
+              We've sent a verification code to <span className="font-medium text-white">{email}</span>.
               Please enter the 6-digit code below to complete your registration.
             </p>
-            
+
             <p className="mb-6 text-sky-400 text-sm">
               Time remaining: {formatTime(timeLeft)}
             </p>
-            
+
             <form onSubmit={verifyCode} className="space-y-4">
               <LabelInputContainer>
                 <Label htmlFor="verification-code">Verification Code</Label>
@@ -583,7 +583,7 @@ export default function Register() {
                   <p className="mt-1 text-red-400 text-sm">{codeError}</p>
                 )}
               </LabelInputContainer>
-              
+
               <div className="flex sm:flex-row flex-col gap-3">
                 <Button
                   type="submit"
@@ -592,7 +592,7 @@ export default function Register() {
                 >
                   {verifyLoading ? "Verifying..." : "Verify Account"}
                 </Button>
-                
+
                 {timeLeft === 0 && (
                   <Button
                     type="button"
@@ -605,9 +605,9 @@ export default function Register() {
                 )}
               </div>
             </form>
-            
-            <button 
-              className="mt-4 text-neutral-400 hover:text-white text-sm" 
+
+            <button
+              className="mt-4 text-neutral-400 hover:text-white text-sm"
               onClick={closeModal}
             >
               Cancel and try again later
