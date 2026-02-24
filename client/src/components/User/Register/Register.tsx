@@ -65,6 +65,7 @@ export default function Register() {
   // UI state
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [testLoading, setTestLoading] = useState<boolean>(false);
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
   // Modal state
@@ -248,15 +249,20 @@ export default function Register() {
   };
 
   const loginWithTestUser = async () => {
-    // Define test credentials
-    const testCredentials = {
-      userName: "A@gmail.com",
-      password: "A@123"
-    };
-
-    // Call your existing login API with test credentials
-    await dispatch(loginUser(testCredentials));
-    return;
+    setTestLoading(true);
+    setError("");
+    try {
+      const res: any = await dispatch(loginUser({ userName: "A", password: "A@123" }));
+      if (res?.status === 200) {
+        router.push("/user/dashboard");
+      } else {
+        setError("Test login failed. Please try again.");
+      }
+    } catch (err: any) {
+      setError("Error during test login: " + (err.message || "Unknown error"));
+    } finally {
+      setTestLoading(false);
+    }
   }
 
   // Request new OTP code
@@ -316,7 +322,7 @@ export default function Register() {
               placeholder="John"
               type="text"
               required
-              disabled={loading}
+              disabled={loading || testLoading}
               className="bg-zinc-900 border-zinc-800 text-white"
             />
             {firstNameFocus && !validFirstName && firstName && (
@@ -346,7 +352,7 @@ export default function Register() {
               placeholder="Doe"
               type="text"
               required
-              disabled={loading}
+              disabled={loading || testLoading}
               className="bg-zinc-900 border-zinc-800 text-white"
             />
             {lastNameFocus && !validLastName && lastName && (
@@ -377,7 +383,7 @@ export default function Register() {
             onBlur={() => setUserNameFocus(false)}
             type="text"
             required
-            disabled={loading}
+            disabled={loading || testLoading}
             className="bg-zinc-900 border-zinc-800 text-white"
           />
           {userNameError && (
@@ -414,7 +420,7 @@ export default function Register() {
             placeholder="your.email@example.com"
             type="email"
             required
-            disabled={loading}
+            disabled={loading || testLoading}
             className="bg-zinc-900 border-zinc-800 text-white"
           />
           {emailError && (
@@ -451,7 +457,7 @@ export default function Register() {
               placeholder="••••••••"
               type={showPassword ? "text" : "password"}
               required
-              disabled={loading}
+              disabled={loading || testLoading}
               className="bg-zinc-900 pr-10 border-zinc-800 text-white"
             />
             <button
@@ -491,7 +497,7 @@ export default function Register() {
               placeholder="••••••••"
               type={showConfirmPassword ? "text" : "password"}
               required
-              disabled={loading}
+              disabled={loading || testLoading}
               className="bg-zinc-900 pr-10 border-zinc-800 text-white"
             />
             <button
@@ -514,7 +520,7 @@ export default function Register() {
         <Button
           className="relative bg-gradient-to-br from-blue-600 hover:from-blue-700 to-indigo-800 hover:to-indigo-900 rounded-md w-full h-11 font-medium text-white"
           type="submit"
-          disabled={loading}
+          disabled={loading || testLoading}
         >
           {loading ? (
             <span className="flex justify-center items-center">
@@ -541,29 +547,18 @@ export default function Register() {
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-400 mb-2">Want to try the app quickly?</p>
         <button
-          onClick={() => {
-            loginWithTestUser()
-              .then((res: any) => {
-                if (res?.status === 200) {
-                  router.push("/user/dashboard");
-                } else {
-                  setError("Test login failed. Please try again.");
-                }
-              })
-              .catch((err: any) => {
-                setError("Error during test login: " + (err.message || "Unknown error"));
-              });
-          }}
+          onClick={loginWithTestUser}
           className="w-full py-2.5 px-4 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg hover:from-purple-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-md transition-all duration-300 flex items-center justify-center group/btn relative"
-          disabled={loading}
+          disabled={loading || testLoading}
+          type="button"
         >
-          {loading ? (
+          {testLoading ? (
             <span className="flex items-center gap-1">
               <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Processing...
+              Logging in...
             </span>
           ) : (
             <span>Try with Test User</span>

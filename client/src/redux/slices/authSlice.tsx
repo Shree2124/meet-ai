@@ -36,7 +36,7 @@ const authSlice = createSlice({
       state.user = null;
       state.loading = false;
     },
-    setGuest: (state, action) =>{
+    setGuest: (state, action) => {
       state.guest = action.payload
       state.loading = false;
     }
@@ -57,10 +57,12 @@ export const loginUser = (credentials: {
 }): AppThunk => async (dispatch) => {
   dispatch(setLoading());
   try {
-    console.log(process.env.NEXT_PUBLIC_BACKEND_URL)
     const response = await axiosInstance.post("/user/login", credentials);
+    if (response?.data?.data) {
+      dispatch(setUser(response.data.data));
+    }
     return response;
-  } catch (error:any) {
+  } catch (error: any) {
     dispatch(setError(error.response?.data?.message || "Login failed"));
     return error
   }

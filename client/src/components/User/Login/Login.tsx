@@ -39,12 +39,13 @@ export default function Login() {
   const [password, setPassword] = useState<string>("");
   const [validPassword, setValidPassword] = useState<boolean>(false);
   const [passwordFocus, setPasswordFocus] = useState<boolean>(false);
-  
+
   // Added showPassword state for toggling password visibility
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [testLoading, setTestLoading] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
 
   const [showPasswordReset, setShowPasswordReset] = useState<boolean>(false);
@@ -76,12 +77,12 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       if (!showPasswordReset) {
         // Login flow
         const res: any = await dispatch(loginUser({ userName, password }));
-        
+
         if (res?.status === 200) {
           setSuccessMessage("Login successful! Redirecting...");
           setTimeout(() => {
@@ -104,7 +105,7 @@ export default function Login() {
           setLoading(false);
           return;
         }
-        
+
         // Mock API call for password reset
         // In a real application, you would call an API endpoint
         setTimeout(() => {
@@ -118,6 +119,26 @@ export default function Login() {
       console.error("Login error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTestLogin = async () => {
+    setTestLoading(true);
+    setError("");
+    try {
+      const res: any = await dispatch(loginUser({ userName: "A", password: "A@123" }));
+      if (res?.status === 200) {
+        setSuccessMessage("Login successful! Redirecting...");
+        setTimeout(() => {
+          router.push("/user/dashboard");
+        }, 1000);
+      } else {
+        setError("Test login failed. Please try again.");
+      }
+    } catch (err: any) {
+      setError("Error during test login: " + (err.message || "Unknown error"));
+    } finally {
+      setTestLoading(false);
     }
   };
 
@@ -184,7 +205,7 @@ export default function Login() {
                 onFocus={() => setUserNameFocus(true)}
                 onBlur={() => setUserNameFocus(false)}
                 className="bg-zinc-900 border-zinc-800 text-white"
-                disabled={loading}
+                disabled={loading || testLoading}
               />
               {userNameFocus && !validUserName && userName && (
                 <p className="mt-1 text-amber-400 text-xs">
@@ -216,7 +237,7 @@ export default function Login() {
                   onFocus={() => setPasswordFocus(true)}
                   onBlur={() => setPasswordFocus(false)}
                   className="bg-zinc-900 pr-10 border-zinc-800 text-white"
-                  disabled={loading}
+                  disabled={loading || testLoading}
                 />
                 <button
                   type="button"
@@ -282,7 +303,7 @@ export default function Login() {
         <Button
           className="relative bg-gradient-to-br from-blue-600 hover:from-blue-700 to-indigo-800 hover:to-indigo-900 rounded-md w-full h-11 font-medium text-white"
           type="submit"
-          disabled={loading || (showPasswordReset && resetEmailSent)}
+          disabled={loading || testLoading || (showPasswordReset && resetEmailSent)}
         >
           {loading ? (
             <span className="flex justify-center items-center">
@@ -313,10 +334,36 @@ export default function Login() {
       {!showPasswordReset && (
         <>
           <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent my-8 w-full h-px" />
-          
+
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-400 mb-2">Want to try the app quickly?</p>
+            <button
+              onClick={handleTestLogin}
+              className="w-full py-2.5 px-4 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg hover:from-purple-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-md transition-all duration-300 flex items-center justify-center group/btn relative"
+              disabled={loading || testLoading}
+              type="button"
+            >
+              {testLoading ? (
+                <span className="flex items-center gap-1">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Logging in...
+                </span>
+              ) : (
+                <span>Try with Test User</span>
+              )}
+              <BottomGradient />
+            </button>
+            <p className="text-xs text-gray-400 mt-2">No registration needed, instant access</p>
+          </div>
+
+          <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent my-6 w-full h-px" />
+
           <div className="flex flex-col space-y-3">
             <p className="mb-2 text-neutral-400 text-sm text-center">Or continue with</p>
-            
+
             {/* <Link href="http://localhost:5000/api/v1/user/oauth/github">
               <button
                 type="button"
@@ -327,7 +374,7 @@ export default function Login() {
                 <BottomGradient />
               </button>
             </Link> */}
-            
+
             {/* <Link href="https://meet-ai-ekne.onrender.com/api/v1/user/oauth/google">
               <button
                 type="button"
