@@ -13,7 +13,7 @@ import { fetchUser, setGuest } from "@/redux/slices/authSlice";
 import axiosInstance from "@/utils/axios";
 
 interface ClientProviderProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
 }
 
 export default function ClientProvider({ children }: ClientProviderProps) {
