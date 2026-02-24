@@ -72,11 +72,11 @@ export default function CreateMeetingPage() {
           enableSummary: enableSummary,
         });
         console.log(res);
-        
+
         if (res?.data.statusCode === 201) {
           setError("")
           router.replace(`/user/meeting/${call?.id}`);
-        } 
+        }
       }
     } catch (error: any) {
       const regex = /Error: (.*?)(<|\\n|$)/;
@@ -301,8 +301,8 @@ export default function CreateMeetingPage() {
                         user.email
                       )
                         ? selectedParticipants.filter(
-                            (email) => email !== user.email
-                          )
+                          (email) => email !== user.email
+                        )
                         : [...selectedParticipants, user.email];
                       setSelectedParticipants(newSelected);
                     }}
@@ -558,11 +558,10 @@ function ParticipantsInput({
                 filteredUsers.map((user) => (
                   <label
                     key={user.email}
-                    className={`flex items-center gap-2 p-3 rounded-md transition-all duration-150 cursor-pointer ${
-                      selectedParticipants.includes(user.email)
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-700 hover:bg-gray-600"
-                    }`}
+                    className={`flex items-center gap-2 p-3 rounded-md transition-all duration-150 cursor-pointer ${selectedParticipants.includes(user.email)
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-700 hover:bg-gray-600"
+                      }`}
                   >
                     <input
                       type="checkbox"
@@ -572,8 +571,8 @@ function ParticipantsInput({
                           user.email
                         )
                           ? selectedParticipants.filter(
-                              (email) => email !== user.email
-                            )
+                            (email) => email !== user.email
+                          )
                           : [...selectedParticipants, user.email];
                         setSelectedParticipants(newSelected);
                       }}
@@ -645,7 +644,7 @@ interface MeetingLinkProps {
 }
 
 function MeetingLink({ call }: MeetingLinkProps) {
-  const meetingLink = `http://localhost:3000/user/meeting/${call.id}`;
+  const meetingLink = `${process.env.NEXT_PUBLIC_CLIENT_URL}/user/meeting/${call.id}`;
 
   return (
     <div className="mt-6 bg-gray-800 rounded-md p-4 w-full max-w-md">
