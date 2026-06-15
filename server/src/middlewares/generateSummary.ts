@@ -76,12 +76,12 @@ export const generateSummary = asyncHandler(async(req:any, res:Response, next:Ne
         console.log("Request sent!")
         const response = await axios({
             method:'post',
-            url:process.env.FLASK_API_URL,
+            url:`${process.env.FLASK_API_URL}/analyze`,
             headers:{
                 'Content-Type':'application/json'
             },
             data:{
-                conversation:meeting?.dialogues
+                transcription:meeting?.dialogues
             }
         })
 

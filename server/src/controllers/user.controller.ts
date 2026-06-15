@@ -453,6 +453,11 @@ const getMeetingHistory = asyncHandler(async (req: any, res: Response) => {
       },
     },
     {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+    {
       $addFields: {
         guestDetails: {
           $filter: {

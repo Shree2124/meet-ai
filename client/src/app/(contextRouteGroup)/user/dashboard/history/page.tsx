@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import previous from "@/assets/icons/previous.svg";
@@ -190,9 +188,8 @@ export default function MeetingHistory() {
       ) : meetings.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-screen-lg">
           {meetings.map((meeting) => (
-            <Link href={`/user/dashboard/meet/${meeting?.roomId}`}>
-              <Card
-                key={meeting._id}
+            <Link key={meeting._id} href={`/user/dashboard/meet/${meeting?.roomId}`}>
+              <div
                 className="bg-[#1c1c1c] text-white shadow-lg rounded-lg relative overflow-visible transition-transform hover:scale-105"
               >
                 <div className="absolute top-[-20px] left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full flex items-center justify-center bg-[#333] shadow-lg overflow-hidden">
@@ -204,7 +201,7 @@ export default function MeetingHistory() {
                   />
                 </div>
 
-                <CardContent className="pt-12">
+                <div className="pt-12 p-6">
                   <Typography
                     variant="body1"
                     className="mb-6 font-bold text-lg"
@@ -232,8 +229,8 @@ export default function MeetingHistory() {
                       </Typography>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </Link>
           ))}
         </div>

@@ -5,14 +5,14 @@ import axios, {
 } from "axios";
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: 'https://meet-ai-ekne.onrender.com/api/v1',
-  // baseURL: 'http://localhost:5000/api/v1',
+  // baseURL: 'https://meet-ai-ekne.onrender.com/api/v1',
+  baseURL: 'http://localhost:5000/api/v1',
   withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    
+
     return config;
   },
   (error) => Promise.reject(error)
